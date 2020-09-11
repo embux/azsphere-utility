@@ -39,8 +39,6 @@ void SendATCommand(const char* dataToSend)
 
 	Init_Serial();
 
-	printf("%d\n", strlen(dataToSend));
-
 	write(_openport, dataToSend, strlen(dataToSend));
 
 	ReceiveATCommand();
@@ -71,9 +69,9 @@ void ReceiveATCommand()
 		// printf("Read %i bytes. Received message: %s", num_bytes, received_buff);
 		printf("%s", received_buff);
 
-		if(!strcmp(received_buff, "OK\n"))
+		if( strstr(received_buff, "OK"))
 			break;
-		if(!strcmp(received_buff, "+CME ERROR : unknown\n"))
+		if( strstr(received_buff, "+CME ERROR : unknown"))
 			break;
 	}	
 }
