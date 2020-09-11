@@ -4,15 +4,15 @@
 
 void display_help (void)
 {
-    printf("Usage: azUtility [-d] [-s dev_node] [--AT] [--ATI] [-S] [-D] [-A] [--SSID ssid --PSK psk -J] [-C connect_string] [-h] [-v]\n"
+    printf("Usage: azutility [-d] [-s dev_node] [--AT] [--ATI] [-S] [-D] [-A] [--SSID ssid --PSK psk -J] [-C connect_string] [-h] [-v]\n"
            "        --AT                 Send AT Check\n"
            "        --ATI                Send ATI Check\n"
-           "  -d,   --setPort            Set serial port device node\n"
-           "  -s,   --defPort            Use default serial port device node (/dev/ttyUSB0)\n"
+           "  -s,   --setPort            Set serial port device node\n"
+           "  -d,   --defPort            Use default serial port device node (/dev/ttyUSB0)\n"
            "  -S,   --AT_CWLAP           Scan Access Point\n"
            "  -D,   --AT_CWDAP           Delete all stored AP info\n"
            "  -A,   --AT_CWAAP           List all stored AP info\n"           
-           "  -J,   --AT_CWJAP           Add AP info ( Input AP info using --SSID & --PSK )\n"
+           "  -J,   --AT_CWJAP           Add AP info ( Input AP info using --SSID and --PSK )\n"
            "  -C,   --AT_ACCS            Setup Connection String\n"
            "  -Q,   --AT_CWSQ            Setup Connection String\n"
            "  -C,   --AT_ACWR            Send Message to Azure IoT Hub\n"
@@ -39,6 +39,7 @@ void process_options( int argc, char *argv[] )
     int ch, option_index;
     bool _isSSID = false;
     bool _isPSK = false;
+    bool _isPort = false;
     char SSID[32] = "";
     char PSK[32] = "";
     static const char* short_options="vhSDAJQRC:W:s:d";
@@ -70,10 +71,12 @@ void process_options( int argc, char *argv[] )
             case 's':
                 setSerialPort(optarg);
                 printf("Use Set Com port: %s.\n\n", getSerialPort());
+                _isPort = true;
                 break;
             case 'd':
                 setSerialPort("/dev/ttyUSB0");
                 printf("Use default Com port: %s.\n\n", getSerialPort());
+                _isPort = true;
                 break;
             case 'ssid':
                 printf("set ssid\n");
@@ -85,11 +88,25 @@ void process_options( int argc, char *argv[] )
                 sprintf(PSK, "%s", optarg);
                 _isPSK = true;
                 break;
+            case 'v':
+                display_version();
+                exit(0);
+                break;
+            case 'h':
+                display_help();
+                exit(0);
+                break;
             default:
                 break;
             }
         }
 
+        if( _isPort == false)
+        {
+            printf("Serial port not define\n");
+            exit(0);
+        }
+        
         optind = 1;
 
         while ((ch = getopt_long(argc, argv, short_options, long_options, &option_index)) >= 0) {
@@ -132,13 +149,7 @@ void process_options( int argc, char *argv[] )
                 break;
             case 'R':
                 AT_ACRV();
-                break;
-            case 'v':
-                display_version();
-                break;
-            case 'h':
-                display_help();
-                break;
+                break;            
             default:                
                 break;
             }
