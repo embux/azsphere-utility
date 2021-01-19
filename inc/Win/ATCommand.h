@@ -1,0 +1,10 @@
+void AT();
+void ATI();
+void AT_CWLAP();
+void AT_CWJAP(char* ssid, char* password);
+void AT_CWDAP();
+void AT_CWAAP();
+void AT_CWSQ();
+void AT_ACCS(char* con_str);
+void AT_ACWR(char* msg);
+void AT_ACRV();
